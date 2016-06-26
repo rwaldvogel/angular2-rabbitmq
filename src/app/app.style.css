@@ -6,3 +6,24 @@ html, body{
 span.active {
   background-color: gray;
 }
+
+.wrapper {
+  display: table;
+}
+.container {
+  display: table-row;
+  background-color: rgba(128, 255, 255, 0.2);
+  width: 50%;
+}
+.container:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.container todo-detail {
+  display: table-cell;
+  width: 100%;
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}

@@ -7,7 +7,7 @@
     "sourceMap": true,
     "noEmitHelpers": true
   },
-  "exclude": [
+"exclude": [
     "node_modules"
   ],
   "awesomeTypescriptLoaderOptions": {

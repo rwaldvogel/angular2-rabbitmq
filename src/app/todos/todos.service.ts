@@ -27,6 +27,18 @@ export class TodoService {
                     .catch(this.handleError);
   }
 
+  updateTodo( iid: String, todo: Todo ): Observable<Todo> {
+    let headers = new Headers({
+      'Content-Type': 'application/json'});
+    let payload = JSON.stringify({initiator: iid,
+        data: {item: todo.item, done: todo.done}});
+    console.debug(payload);
+    return this.http.put(this.service_url + "/" + todo._id, payload, {headers: headers} )
+                    .map(this.extractData)
+                    .catch(this.handleError);
+  }
+
+
   private extractData(res: Response) {
     let body = res.json();
     console.debug( "extractData" );

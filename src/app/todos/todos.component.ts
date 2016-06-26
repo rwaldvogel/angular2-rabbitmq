@@ -5,6 +5,8 @@ import { TodoService } from './todos.service';
 import { Observable } from 'rxjs/Observable';
 import { GUID } from '../utils';
 import { TodoDetailComponent } from './todo-detail.component';
+import { TodoEditComponent } from './todo-edit.component';
+import { Dragula, DragulaService } from 'ng2-dragula/ng2-dragula';
 
 var Stomp = require('stompjs');
 var SockJS = require('sockjs-client');
@@ -20,7 +22,8 @@ var SockJS = require('sockjs-client');
   ],
   // We need to tell Angular's compiler which directives are in our template.
   // Doing so will allow Angular to attach our behavior to an element
-  directives: [TodoDetailComponent],
+  directives: [TodoDetailComponent, Dragula, TodoEditComponent],
+  viewProviders: [DragulaService],
   // We need to tell Angular's compiler which custom pipes are in our template.
   pipes: [ ],
   // Our list of styles in our component. We may add more to compose many styles together
@@ -38,6 +41,8 @@ export class TodosComponent {
   subscription : any;
   changed: boolean = false;
   iid: String;
+  selectedTodo: Todo;
+
   // TypeScript public modifiers
   constructor(public appState: AppState, private service: TodoService) {
     this.iid = GUID.newGuid();
@@ -100,6 +105,16 @@ export class TodosComponent {
   {
     this.loadTodos();
     this.changed = false;
+  }
+
+  onSelect( todo: Todo )
+  {
+    this.selectedTodo = todo;
+  }
+
+  onUpdateSelected()
+  {
+
   }
 
   private loadTodos()

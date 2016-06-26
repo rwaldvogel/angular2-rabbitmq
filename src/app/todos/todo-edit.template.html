@@ -1,0 +1,10 @@
+<div *ngIf="todo" class="todo-edit-container">
+  <div>
+     <label>item: </label>
+     <input [(ngModel)]="todo.item" placeholder="item"/>
+ </div>
+ <div>Erledigt: {{todo.done}}</div>
+ <div>
+   <button (click)="onUpdate()">Save</button>
+ </div>
+</div>

@@ -1,10 +1,12 @@
+
 <div *ngIf="changed">
   content has changed.
   <button (click)="onReloadTodos()">Reload Todos</button>
 </div>
-<ul class="todos">
-  <div *ngFor="let todo of todos">
-    <todo-detail [todo]="todo"></todo-detail>
+<todo-edit [todo]="selectedTodo"></todo-edit>
+<div class="wrapper">
+  <div *ngFor="let todo of todos" [dragula]='"first-bag"' class='container'>
+    <todo-detail [todo]="todo" (click)="onSelect(todo)"></todo-detail>
   </div>
-</ul>
+</div>
 <button (click)="onNewTodo()">New Todo</button>

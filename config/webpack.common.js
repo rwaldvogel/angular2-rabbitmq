@@ -78,7 +78,9 @@ module.exports = {
     root: helpers.root('src'),
 
     // remove other default values
-    modulesDirectories: ['node_modules'],
+    modulesDirectories: [
+      'node_modules'
+    ],
 
   },
 
@@ -118,7 +120,6 @@ module.exports = {
           helpers.root('node_modules/@angular'),
           helpers.root('node_modules/@ngrx'),
           helpers.root('node_modules/@angular2-material'),
-          helpers.root('node_modules/rabbit.js'),
         ]
       }
 

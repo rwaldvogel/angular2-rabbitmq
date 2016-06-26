@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-
 import { Todo } from './todo';
 import { GUID } from '../utils';
 import { TodoService } from './todos.service';
@@ -9,23 +8,17 @@ var SockJS = require('sockjs-client');
 
 
 @Component({
-  selector: 'todo-detail',
-  template: `
-    <div *ngIf="todo" class="todo-detail">
-      <div>{{todo.item}}</div>
-      <div>Erledigt: {{todo.done}}</div>
-    </div>`
-  ,
+  selector: 'todo-edit',
+  templateUrl: 'todo-edit.template.html',
   styles: [`
-    .todo-detail {
-      margin-top: 4px;
-      border-bottom: solid 1px;
+    .todo-edit-container {
+      margin: 4px;
+      border: solid 1px;
     }
   `],
   providers: [TodoService]
-
 })
-export class TodoDetailComponent {
+export class TodoEditComponent {
   @Input()
   todo: Todo;
   iid: String;
@@ -64,7 +57,7 @@ export class TodoDetailComponent {
             }
       };
       console.log("before subscription");
-      this.subscription = clt.subscribe("/topic/todo" + self.todo._id, callback);
+      this.subscription = clt.subscribe("/topic/todos", callback);
       console.log("after subscription");
     };
     var on_error =  function() {
@@ -74,4 +67,10 @@ export class TodoDetailComponent {
     this.client.connect('guest', 'guest', on_connect, on_error, '/');
   }
 
+
+  onUpdate()
+  {
+    console.log("Update");
+    this.service.updateTodo( this.iid, this.todo ).subscribe();
+  }
 }

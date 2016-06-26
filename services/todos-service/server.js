@@ -27,6 +27,7 @@ var Todo = mongoose.model('Todo', TodoSchema)
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
   next();
 });
 
@@ -74,8 +75,15 @@ app.post('/', function (req, res, next) {
 
 // update todo
 app.put('/:id', function (req, res, next) {
-    Todo.findByIdAndUpdate(req.params.id, req.body).
+    console.log("PUT " + req.params.id);
+    console.log(req.body);
+    var iid = req.body.initiator
+    Todo.findByIdAndUpdate(req.params.id, req.body.data, {new: true}).
         then(function(todo) {
+          payload = {data: todo, initiator: iid};
+          console.log(payload);
+          var msg = new Buffer(JSON.stringify(payload));
+          client.publish('todos', msg);
             res.json({data: todo});
         })
         .catch(function(err) {
@@ -85,7 +93,7 @@ app.put('/:id', function (req, res, next) {
 
 // delete todo
 app.delete('/:id', function (req, res, next) {
-    Todo.findByIdAndRemove(req.params.id, req.body).
+    Todo.findByIdAndRemove(req.params.id, req.body.data).
         then(function(todo) {
             res.json({data: todo});
         })
