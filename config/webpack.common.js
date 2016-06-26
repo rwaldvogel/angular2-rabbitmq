@@ -18,7 +18,7 @@ const HtmlElementsPlugin = require('./html-elements-plugin');
  * Webpack Constants
  */
 const METADATA = {
-  title: 'Angular2 Webpack Starter by @gdi2290 from @AngularClass',
+  title: 'Angular2 RabbitMQ',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()
 };
@@ -118,6 +118,7 @@ module.exports = {
           helpers.root('node_modules/@angular'),
           helpers.root('node_modules/@ngrx'),
           helpers.root('node_modules/@angular2-material'),
+          helpers.root('node_modules/rabbit.js'),
         ]
       }
 

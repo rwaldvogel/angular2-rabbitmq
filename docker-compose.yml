@@ -1,0 +1,29 @@
+version: "2"
+services:
+  rabbitmq:
+    build:
+      context: ./
+      dockerfile: Dockerfile_rabbitmq
+#    image: rabbitmq:3
+    ports:
+      - "5671:5671"
+      - "5672:5672"
+      - "8080:15672"
+      - "15674:15674"
+      - "15672:15672"
+      - "1883:1883"
+
+  todos-micro:
+    build:
+      context: services/todos-service
+    command: bash -c "sleep 6 && node server.js"
+    ports:
+      - "30000:3000"
+    links:
+      - rabbitmq
+      - mongodb
+  mongodb:
+    image: mongo:3.2
+    ports:
+      - "37017:27017"
+      - "38017:28017"
