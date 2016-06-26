@@ -3,6 +3,8 @@ import { Todo } from './todo';
 import { AppState } from '../app.service';
 import { TodoService } from './todos.service';
 import { Observable } from 'rxjs/Observable';
+import { GUID } from '../utils';
+import { TodoDetailComponent } from './todo-detail.component';
 
 var Stomp = require('stompjs');
 var SockJS = require('sockjs-client');
@@ -18,8 +20,7 @@ var SockJS = require('sockjs-client');
   ],
   // We need to tell Angular's compiler which directives are in our template.
   // Doing so will allow Angular to attach our behavior to an element
-  directives: [
-  ],
+  directives: [TodoDetailComponent],
   // We need to tell Angular's compiler which custom pipes are in our template.
   pipes: [ ],
   // Our list of styles in our component. We may add more to compose many styles together
@@ -36,9 +37,10 @@ export class TodosComponent {
   client : any;
   subscription : any;
   changed: boolean = false;
-
+  iid: String;
   // TypeScript public modifiers
   constructor(public appState: AppState, private service: TodoService) {
+    this.iid = GUID.newGuid();
   }
 
   ngOnInit() {
@@ -54,14 +56,21 @@ export class TodosComponent {
         console.log('connected');
         var callback = function(message) {
             // called when the client receives a STOMP message from the server
+            let initiator;
             if (message.body)
             {
-
+              let p = JSON.parse(message.body);
+              let initiator = p.initiator;
+              if(initiator == self.iid) {
+                self.loadTodos();
+              }
+              else {
+                self.changed = true;
+              }
             }
             else
             {
             }
-            self.changed = true
       };
       console.log("before subscription");
       this.subscription = clt.subscribe("/topic/todos", callback);
@@ -77,7 +86,7 @@ export class TodosComponent {
 
   onNewTodo()
   {
-    this.service.newTodo().subscribe(
+    this.service.newTodo(this.iid).subscribe(
       todo => {
         let dbg: any;
         dbg = todo;

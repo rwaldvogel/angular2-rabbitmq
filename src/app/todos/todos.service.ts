@@ -1,10 +1,9 @@
 import { Injectable }     from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Headers, Response } from '@angular/http';
 import { Todo }           from './todo';
 import { Observable }     from 'rxjs/Observable';
 import '../rxjs-operators';
-
-
+import '../utils';
 
 @Injectable()
 export class TodoService {
@@ -18,8 +17,12 @@ export class TodoService {
                     .catch(this.handleError);
   }
 
-  newTodo(): Observable<Todo> {
-    return this.http.post(this.service_url, {})
+  newTodo( iid: String ): Observable<Todo> {
+    let headers = new Headers({
+      'Content-Type': 'application/json'});
+    let payload = JSON.stringify({initiator: iid,
+        data:{item: "New item", done: false}});
+    return this.http.post(this.service_url, payload, {headers: headers} )
                     .map(this.extractData)
                     .catch(this.handleError);
   }
@@ -30,6 +33,7 @@ export class TodoService {
     console.debug(body);
     return body.data || { };
   }
+
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message

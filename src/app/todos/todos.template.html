@@ -1,10 +1,10 @@
 <div *ngIf="changed">
   content has changed.
-  <button (click)="onReloadTodos()">Reload Todos</button>  
+  <button (click)="onReloadTodos()">Reload Todos</button>
 </div>
 <ul class="todos">
-  <li *ngFor="let todo of todos">
-    {{todo.item}} {{todo.done}}
-  </li>
+  <div *ngFor="let todo of todos">
+    <todo-detail [todo]="todo"></todo-detail>
+  </div>
 </ul>
 <button (click)="onNewTodo()">New Todo</button>
