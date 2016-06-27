@@ -4,7 +4,6 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile_rabbitmq
-#    image: rabbitmq:3
     ports:
       - "5671:5671"
       - "5672:5672"

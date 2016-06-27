@@ -15,8 +15,7 @@ var SockJS = require('sockjs-client');
       margin: 4px;
       border: solid 1px;
     }
-  `],
-  providers: [TodoService]
+  `]
 })
 export class TodoEditComponent {
   @Input()
