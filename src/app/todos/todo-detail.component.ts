@@ -14,16 +14,11 @@ var SockJS = require('sockjs-client');
   selector: 'todo-detail',
   template: `
     <div *ngIf="todo" class="todo-detail">
-      <div>{{todo.item}}</div>
-      <div>Erledigt: {{todo.done}}</div>
+      {{todo.item}}
+      <br>
+      Erledigt: {{todo.done}}
     </div>`
   ,
-  styles: [`
-    .todo-detail {
-      margin-top: 4px;
-      border-bottom: solid 1px;
-    }
-  `],
   providers: [TodoService]
 
 })

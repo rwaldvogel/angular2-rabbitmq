@@ -36,6 +36,7 @@ export class TodosComponent {
   // Set our default values
   localState = { value: '' };
   todos: Todo[];
+  todos_done: Todo[]
   todo: Todo;
   error: any;
   client : any;
@@ -69,7 +70,8 @@ export class TodosComponent {
                 self.loadTodos();
               }
               else {
-                self.changed = true;
+                // self.changed = true;
+                self.loadTodos();
               }
             }
             else

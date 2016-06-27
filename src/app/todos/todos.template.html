@@ -4,9 +4,14 @@
   <button (click)="onReloadTodos()">Reload Todos</button>
 </div>
 <todo-edit [todo]="selectedTodo"></todo-edit>
-<div class="wrapper">
-  <div *ngFor="let todo of todos" [dragula]='"first-bag"' class='container'>
-    <todo-detail [todo]="todo" (click)="onSelect(todo)"></todo-detail>
+<div class='parent'>
+  <div class="wrapper">
+    <div [dragula]='"first-bag"' class='container' [dragulaModel]='todos'>
+      <div *ngFor="let todo of todos" >
+        <todo-detail [todo]="todo" (click)="onSelect(todo)"></todo-detail>
+      </div>
+    </div>
+    <div [dragula]='"first-bag"' class='container' [dragulaModel]='todos_done'>
+    </div>
   </div>
-</div>
 <button (click)="onNewTodo()">New Todo</button>
