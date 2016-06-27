@@ -4,6 +4,7 @@ import { Todo } from './todo';
 import { GUID } from '../utils';
 import { TodoService } from './todos.service';
 import { InitiatorService } from '../initiator.service'
+import { stomp_backend } from '../urls';
 
 var Stomp = require('stompjs');
 var SockJS = require('sockjs-client');
@@ -39,7 +40,7 @@ export class TodoDetailComponent {
     console.debug("starting stomp");
     Stomp.WebSocketClass = SockJS;
 
-    let clt = Stomp.client('http://127.0.0.1:15674/stomp');
+    let clt = Stomp.client(stomp_backend);
     clt.heartbeat.incoming = 0;
     clt.heartbeat.outgoing = 0;
     // Scoping this for closure

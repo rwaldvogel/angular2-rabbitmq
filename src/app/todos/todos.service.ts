@@ -3,12 +3,13 @@ import { Http, Headers, Response } from '@angular/http';
 import { Todo }           from './todo';
 import { Observable }     from 'rxjs/Observable';
 import { InitiatorService } from '../initiator.service';
+import { micro_service_backend } from '../urls';
 import '../rxjs-operators';
 import '../utils';
 
 @Injectable()
 export class TodoService {
-  private service_url = 'http://localhost:30000';  // URL to web API
+  private service_url = micro_service_backend;  // URL to web API
   constructor (private http: Http, private iid: InitiatorService) {
   }
 

@@ -4,7 +4,7 @@ import { AppState } from '../app.service';
 import { TodoService } from './todos.service';
 import { Observable } from 'rxjs/Observable';
 import { InitiatorService } from '../initiator.service';
-
+import { stomp_backend } from '../urls';
 import { TodoDetailComponent } from './todo-detail.component';
 import { TodoEditComponent } from './todo-edit.component';
 import { Dragula, DragulaService } from 'ng2-dragula/ng2-dragula';
@@ -51,7 +51,7 @@ export class TodosComponent {
     console.debug("starting stomp");
     Stomp.WebSocketClass = SockJS;
 
-    let clt = Stomp.client('http://127.0.0.1:15674/stomp');
+    let clt = Stomp.client(stomp_backend);
     clt.heartbeat.incoming = 0;
     clt.heartbeat.outgoing = 0;
     // Scoping this for closure
