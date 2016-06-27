@@ -16,26 +16,50 @@ Feel invited to join the discussion. Comments, forks and discussion are very wel
 
 ```
 # clone the repo
-git clone https://github.com/rwaldvogel/angular2-rabbitmq.git
+$ git clone https://github.com/rwaldvogel/angular2-rabbitmq.git
 
 # change diretory to the repo
-cd angular2-rabbitmq
+$ cd angular2-rabbitmq
 
 # install dependent modules
-npm install
+$ npm install
 
-# start up all required services
-docker-compose up
+# build the docker images
+$ docker-compose build
 ```
 
-go to [http://0.0.0.0:3000](http://0.0.0.0:3000) or [http://localhost:3000](http://localhost:3000) in your browser.
+This project is meant to be a prototype. So we have to make an ugly patch to Stomp.js: Remove the Node.js dependencies:
+
+```
+// EDIT node_modules/stompjs/index.js
+// Comment out as shown below
+
+var Stomp = require('./lib/stomp.js');
+// var StompNode = require('./lib/stomp-node.js');
+
+module.exports = Stomp.Stomp;
+// module.exports.overTCP = StompNode.overTCP;
+// module.exports.overWS = StompNode.overWS;
+```
+
+So we are ready to the backends:
+
+```
+$ docker-compose up
+```
+
+And in another terminal start the webapplication:
+```
+$ npm run server:dev:hmr
+```
+go to [http://localhost:3000](http://localhost:3000) in your browser. If you are running Chrome consider using 127.0.0.1 instead of localhost
 
 ### Running a virtualized Docker-Engine
 If you are running Docker in a virtualized environment (like on Windows or Mac). You need to change the server IPs according to the exposed NIC. See
 
 > docker-machine ip
 
-# REVENTful resources
+# RESTful resources with events
 RESTful resouces that actively propagate events using RabbitMQ (in this case).
 
 The idea is to combine REST-services with events. Let's start with small example: Todo list.
@@ -52,50 +76,8 @@ So we have the our todos implemented as a microservice with docker.
 
 So we can do anything we'd like to with todos.
 
+More to come
 
-
-## File Structure
-We use the component approach in our starter. This is the new standard for developing Angular apps and a great way to ensure maintainable code by encapsulation of our behavior logic. A component is basically a self contained app usually in a single file or a folder with each concern as a file: style, template, specs, e2e, and component class. Here's how it looks:
-```
-angular2-webpack-starter/
- ├──config/                    * our configuration
- |   ├──helpers.js             * helper functions for our configuration files
- |   ├──spec-bundle.js         * ignore this magic that sets up our angular 2 testing environment
- |   ├──karma.conf.js          * karma config for our unit tests
- |   ├──protractor.conf.js     * protractor config for our end-to-end tests
- │   ├──webpack.dev.js         * our development webpack config
- │   ├──webpack.prod.js        * our production webpack config
- │   └──webpack.test.js        * our testing webpack config
- │
- ├──src/                       * our source files that will be compiled to javascript
- |   ├──main.browser.ts        * our entry file for our browser environment
- │   │
- |   ├──index.html             * Index.html: where we generate our index page
- │   │
- |   ├──polyfills.ts           * our polyfills file
- │   │
- |   ├──vendor.ts              * our vendor file
- │   │
- │   ├──app/                   * WebApp: folder
- │   │   ├──app.spec.ts        * a simple test of components in app.ts
- │   │   ├──app.e2e.ts         * a simple end-to-end test for /
- │   │   └──app.ts             * App.ts: a simple version of our App component components
- │   │
- │   └──assets/                * static assets are served here
- │       ├──icon/              * our list of icons from www.favicon-generator.org
- │       ├──service-worker.js  * ignore this. Web App service worker that's not complete yet
- │       ├──robots.txt         * for search engines to crawl your website
- │       └──human.txt          * for humans to know who the developers are
- │
- │
- ├──tslint.json                * typescript lint config
- ├──typedoc.json               * typescript documentation generator
- ├──tsconfig.json              * config that webpack uses for typescript
- ├──typings.json               * our typings manager
- ├──package.json               * what npm uses to manage it's dependencies
- └──webpack.config.js          * webpack main configuration file
-
-```
 
 # License
  [MIT](/LICENSE)
