@@ -4,6 +4,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { AppState } from './app.service';
+import { InitiatorService } from './initiator.service';
 
 /*
  * App Component
@@ -15,6 +16,7 @@ import { AppState } from './app.service';
   styleUrls: [
     './app.style.css'
   ],
+  providers: [InitiatorService],
   template: `
     <nav>
       <span>
@@ -39,7 +41,8 @@ export class App {
   url = 'https://twitter.com/AngularClass';
 
   constructor(
-    public appState: AppState) {
+    public appState: AppState,
+    private iid_service: InitiatorService ) {
 
   }
 

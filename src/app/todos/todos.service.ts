@@ -2,13 +2,14 @@ import { Injectable }     from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { Todo }           from './todo';
 import { Observable }     from 'rxjs/Observable';
+import { InitiatorService } from '../initiator.service';
 import '../rxjs-operators';
 import '../utils';
 
 @Injectable()
 export class TodoService {
   private service_url = 'http://localhost:30000';  // URL to web API
-  constructor (private http: Http) {
+  constructor (private http: Http, private iid: InitiatorService) {
   }
 
   getTodos(): Observable<Todo[]> {
@@ -17,20 +18,20 @@ export class TodoService {
                     .catch(this.handleError);
   }
 
-  newTodo( iid: String ): Observable<Todo> {
+  newTodo(): Observable<Todo> {
     let headers = new Headers({
       'Content-Type': 'application/json'});
-    let payload = JSON.stringify({initiator: iid,
+    let payload = JSON.stringify({initiator: this.iid.getIID(),
         data:{item: "New item", done: false}});
     return this.http.post(this.service_url, payload, {headers: headers} )
                     .map(this.extractData)
                     .catch(this.handleError);
   }
 
-  updateTodo( iid: String, todo: Todo ): Observable<Todo> {
+  updateTodo( todo: Todo ): Observable<Todo> {
     let headers = new Headers({
       'Content-Type': 'application/json'});
-    let payload = JSON.stringify({initiator: iid,
+    let payload = JSON.stringify({initiator: this.iid.getIID(),
         data: {item: todo.item, done: todo.done}});
     console.debug(payload);
     return this.http.put(this.service_url + "/" + todo._id, payload, {headers: headers} )

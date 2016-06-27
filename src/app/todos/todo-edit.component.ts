@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Todo } from './todo';
-import { GUID } from '../utils';
 import { TodoService } from './todos.service';
+import { InitiatorService } from '../initiator.service';
 
 var Stomp = require('stompjs');
 var SockJS = require('sockjs-client');
@@ -21,12 +21,10 @@ var SockJS = require('sockjs-client');
 export class TodoEditComponent {
   @Input()
   todo: Todo;
-  iid: String;
   client: any;
 
-  constructor(private service: TodoService)
+  constructor(private service: TodoService, private iid: InitiatorService)
   {
-    this.iid = GUID.newGuid();
   }
 
   ngOnInit() {
@@ -47,7 +45,7 @@ export class TodoEditComponent {
             {
               let p = JSON.parse(message.body);
               let initiator = p.initiator;
-              if(initiator == self.iid) {
+              if(initiator == self.iid.getIID()) {
               }
               else {
               }
@@ -71,6 +69,6 @@ export class TodoEditComponent {
   onUpdate()
   {
     console.log("Update");
-    this.service.updateTodo( this.iid, this.todo ).subscribe();
+    this.service.updateTodo( this.todo ).subscribe();
   }
 }

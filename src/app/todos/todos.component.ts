@@ -3,7 +3,8 @@ import { Todo } from './todo';
 import { AppState } from '../app.service';
 import { TodoService } from './todos.service';
 import { Observable } from 'rxjs/Observable';
-import { GUID } from '../utils';
+import { InitiatorService } from '../initiator.service';
+
 import { TodoDetailComponent } from './todo-detail.component';
 import { TodoEditComponent } from './todo-edit.component';
 import { Dragula, DragulaService } from 'ng2-dragula/ng2-dragula';
@@ -40,12 +41,10 @@ export class TodosComponent {
   client : any;
   subscription : any;
   changed: boolean = false;
-  iid: String;
   selectedTodo: Todo;
 
   // TypeScript public modifiers
-  constructor(public appState: AppState, private service: TodoService) {
-    this.iid = GUID.newGuid();
+  constructor(public appState: AppState, private service: TodoService, private iid: InitiatorService) {
   }
 
   ngOnInit() {
@@ -66,7 +65,7 @@ export class TodosComponent {
             {
               let p = JSON.parse(message.body);
               let initiator = p.initiator;
-              if(initiator == self.iid) {
+              if(initiator == self.iid.getIID()) {
                 self.loadTodos();
               }
               else {
@@ -91,7 +90,7 @@ export class TodosComponent {
 
   onNewTodo()
   {
-    this.service.newTodo(this.iid).subscribe(
+    this.service.newTodo().subscribe(
       todo => {
         let dbg: any;
         dbg = todo;
