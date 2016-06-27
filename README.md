@@ -54,10 +54,20 @@ $ npm run server:dev:hmr
 ```
 go to [http://localhost:3000](http://localhost:3000) in your browser. If you are running Chrome consider using 127.0.0.1 instead of localhost
 
-### Running a virtualized Docker-Engine
+## Running a virtualized Docker-Engine
 If you are running Docker in a virtualized environment (like on Windows or Mac). You need to change the server IPs according to the exposed NIC. See
 
-> docker-machine ip
+```
+$ docker-machine ip
+192.168.99.100
+```
+
+Adjust `urls.ts` according to your IPs:
+
+```
+export const stomp_backend = 'http://192.168.99.100:15674/stomp'
+export const micro_service_backend = 'http://192.168.99.100:30000'
+```
 
 # RESTful resources with events
 RESTful resouces that actively propagate events using RabbitMQ (in this case).
