@@ -19,6 +19,12 @@ export class TodoService {
                     .catch(this.handleError);
   }
 
+  getTodo(id: String): Observable<Todo> {
+    return this.http.get(this.service_url + "/" + id)
+                    .map(this.extractTodo)
+                    .catch(this.handleError);
+  }
+
   newTodo(): Observable<Todo> {
     let headers = new Headers({
       'Content-Type': 'application/json'});
@@ -47,6 +53,14 @@ export class TodoService {
     console.debug(body);
     return body.data || { };
   }
+
+  private extractTodo(res: Response) {
+    let body = res.json();
+    console.debug( "extractData" );
+    console.debug(body);
+    return body.data || { };
+  }
+
 
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure

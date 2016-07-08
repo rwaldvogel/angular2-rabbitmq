@@ -5,23 +5,23 @@ var mongoose = require('mongoose');
 var promise = require('bluebird');
 
 var mqtt    = require('mqtt');
-var client  = mqtt.connect('mqtt://rabbitmq', {username: 'guest', password: 'guest'});
+var client  = mqtt.connect('mqtt://mosquitto', {username: 'guest', password: 'guest', clientId: 'mongodb'});
 
+var options = { promiseLibrary: require('bluebird') };
 client.on('connect', function () {
   console.log("mqtt connected to rabbitmq")
 });
 
 
-mongoose.connect('mongodb://mongodb:27017/rabbit-mq-todo');
-
 var TodoSchema = new mongoose.Schema({
-    item: { type: String, default: "todo" },
+    item: { type: String, default: "" },
+    description: {type: String, default: ""},
     done: { type: Boolean, default: false },
     updated_at: { type: Date, default: Date.now },
 });
 
-
-
+var options = { promiseLibrary: require('bluebird') };
+mongoose.connect('mongodb://mongodb:27017/rabbit-mq-todo', options);
 var Todo = mongoose.model('Todo', TodoSchema)
 
 app.use(function(req, res, next) {
@@ -58,15 +58,18 @@ app.get('/', function (req, res, next) {
 
 // Get all todos
 app.post('/', function (req, res, next) {
+    console.log("got post");
     console.log(req.body);
     var iid = req.body.initiator
     Todo.create(req.body.data)
         .then(function(todo) {
+            console.log("created new todo")
             payload = {data: todo, initiator: iid};
             console.log(payload);
-            var msg = new Buffer(JSON.stringify(payload));
-            client.publish('todos', msg);
             res.json({data: todo});
+            var msg = new Buffer(JSON.stringify(payload));
+            client.publish('/todos', msg);
+            next();
         })
         .catch(function(err) {
             res.send(err);
@@ -83,8 +86,8 @@ app.put('/:id', function (req, res, next) {
           payload = {data: todo, initiator: iid};
           console.log(payload);
           var msg = new Buffer(JSON.stringify(payload));
-          client.publish('todos', msg);
-            res.json({data: todo});
+          client.publish('/todos/' + todo.id, msg);
+          res.json({data: todo});
         })
         .catch(function(err) {
             res.send(err);

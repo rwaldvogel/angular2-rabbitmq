@@ -9,8 +9,10 @@ import { TodoDetailComponent } from './todo-detail.component';
 import { TodoEditComponent } from './todo-edit.component';
 import { Dragula, DragulaService } from 'ng2-dragula/ng2-dragula';
 
-var Stomp = require('stompjs');
-var SockJS = require('sockjs-client');
+// var Stomp = require('stompjs');
+// var SockJS = require('sockjs-client');
+declare var Paho;
+
 
 @Component({
   // The selector is what angular internally uses
@@ -48,45 +50,51 @@ export class TodosComponent {
   constructor(public appState: AppState, private service: TodoService, private iid: InitiatorService) {
   }
 
-  ngOnInit() {
-    console.debug("starting stomp");
-    Stomp.WebSocketClass = SockJS;
 
-    let clt = Stomp.client(stomp_backend);
-    clt.heartbeat.incoming = 0;
-    clt.heartbeat.outgoing = 0;
-    // Scoping this for closure
-    let self = this;
-    var on_connect = function() {
-        console.log('connected');
-        var callback = function(message) {
-            // called when the client receives a STOMP message from the server
-            let initiator;
-            if (message.body)
-            {
-              let p = JSON.parse(message.body);
-              let initiator = p.initiator;
-              if(initiator == self.iid.getIID()) {
-                self.loadTodos();
-              }
-              else {
-                // self.changed = true;
-                self.loadTodos();
-              }
-            }
-            else
-            {
-            }
-      };
-      console.log("before subscription");
-      this.subscription = clt.subscribe("/topic/todos", callback);
-      console.log("after subscription");
-    };
-    var on_error =  function() {
-       console.log('error');
-    };
-    this.client = clt;
-    this.client.connect('guest', 'guest', on_connect, on_error, '/');
+  private connectViaMQTT()
+  {
+    // Create a client instance
+    let client = new Paho.MQTT.Client('127.0.0.1', Number(9001), this.iid.getIID() );
+    var self = this;
+    // set callback handlers
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+
+    // connect the client
+    client.connect({onSuccess:onConnect, userName:'guest', password: 'guest'});
+
+
+    // called when the client connects
+    function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("onConnect");
+      client.subscribe("/todos/#");
+    }
+
+    // called when the client loses its connection
+    function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:"+responseObject.errorMessage);
+      }
+    }
+
+    // called when a message arrives
+    function onMessageArrived(message) {
+      console.log("onMessageArrived:"+message.payloadString);
+      let payload = JSON.parse(message.payloadString)
+      console.log("iid" + self.iid.getIID());
+      console.log(message.initiator != self.iid.getIID());
+      console.log(message.initiator);
+      if( payload.initiator != self.iid.getIID() )
+      {
+        console.log("reloading data");
+        self.loadTodos();
+      }
+    }
+  }
+  ngOnInit() {
+    console.debug("starting MQTT");
+    this.connectViaMQTT();
     this.loadTodos();
   }
 
@@ -115,7 +123,15 @@ export class TodosComponent {
 
   onUpdateSelected()
   {
-
+    this.service.updateTodo(this.selectedTodo).subscribe(
+      todo => {
+        let dbg: any;
+        dbg = todo;
+        console.debug(dbg);
+        this.todo = todo;
+      },
+      error => this.error = error
+    );
   }
 
   private loadTodos()
