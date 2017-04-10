@@ -4,7 +4,7 @@ import { NoContent } from './no-content';
 import { TodosComponent } from './todos';
 
 export const routes: RouterConfig = [
-  { path: '',      component: Home },
+  { path: '',       component: TodosComponent },
   { path: 'todos',  component: TodosComponent },
   // make sure you match the component type string to the require in asyncRoutes
   { path: '**',    component: NoContent },

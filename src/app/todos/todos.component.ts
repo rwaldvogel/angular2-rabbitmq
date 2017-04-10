@@ -102,9 +102,10 @@ export class TodosComponent {
   {
     this.service.newTodo().subscribe(
       todo => {
+        this.loadTodos();
         let dbg: any;
         dbg = todo;
-        console.debug(dbg);
+        console.debug("new todo", dbg, "<<");
         this.todo = todo;
       },
       error => this.error = error

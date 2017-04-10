@@ -3,7 +3,7 @@
   content has changed.
   <button (click)="onReloadTodos()">Reload Todos</button>
 </div>
-<todo-edit [todo]="selectedTodo"></todo-edit>
+<todo-edit *ngIf="todo" [todo]="selectedTodo"></todo-edit>
 <div class='parent'>
   <div class="wrapper">
     <div [dragula]='"first-bag"' class='container' [dragulaModel]='todos'>
